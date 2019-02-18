@@ -43,4 +43,6 @@ _Note: the following is just a showcase of planned usage of `todo`_
 
     # Remove TODOs permanently
     $ todo remove ...<id>
+    # Remove all TODOs permanently
+    $ todo remove --all 
 ```
