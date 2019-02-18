@@ -3,7 +3,20 @@ pub trait Serialize {
     where
         Self: Sized;
 
-    fn serialze(&self) -> Vec<u8>;
+    fn serialize(&self) -> Vec<u8>;
+}
+
+impl Serialize for bool {
+    fn deserialize(iter: &mut Iterator<Item = u8>) -> Option<bool> {
+        match iter.next() {
+            Some(x) => Some(x != 0),
+            _ => None,
+        }
+    }
+
+    fn serialize(&self) -> Vec<u8> {
+        vec![*self as u8]
+    }
 }
 
 impl Serialize for u64 {
@@ -16,7 +29,7 @@ impl Serialize for u64 {
         }
     }
 
-    fn serialze(&self) -> Vec<u8> {
+    fn serialize(&self) -> Vec<u8> {
         let n = *self;
         let m = |x| (x & 0xFF) as u8;
         vec![m(n >> 24), m(n >> 16), m(n >> 8), m(n)]
@@ -35,8 +48,8 @@ impl Serialize for String {
         None
     }
 
-    fn serialze(&self) -> Vec<u8> {
-        let mut vec = (self.len() as u64).serialze();
+    fn serialize(&self) -> Vec<u8> {
+        let mut vec = (self.len() as u64).serialize();
         vec.append(&mut self.as_bytes().to_vec());
         vec
     }
