@@ -49,6 +49,35 @@ mod tests {
             assert_eq!(serde, *n);
         }
     }
+
+    #[test]
+    fn test_vec() {
+        let numbers: Vec<u64> = vec![
+            0,
+            1,
+            1 << 8,
+            1 << 16,
+            1 << 24,
+            1 << 32,
+            1 << 40,
+            1 << 48,
+            1 << 56,
+            !0,
+            2,
+            10,
+            12,
+            300,
+            42323,
+            43243243,
+            654753478,
+            98795456765,
+            2312464356,
+        ];
+
+        let serde = Vec::<u64>::deserialize(&mut numbers.serialize().into_iter()).unwrap();
+
+        assert_eq!(serde, numbers);
+    }
 }
 
 pub trait Serialize {
@@ -64,13 +93,27 @@ where
     T: Serialize,
 {
     fn deserialize(iter: &mut Iterator<Item = u8>) -> Option<Self> {
-        // TODO implement
-        unimplemented!()
+        if let Some(size) = u64::deserialize(iter) {
+            let mut v = Vec::with_capacity(size as usize);
+
+            for _ in 0..size {
+                match T::deserialize(iter) {
+                    Some(elem) => v.push(elem),
+                    _ => return None,
+                }
+            }
+
+            return Some(v);
+        }
+
+        None
     }
 
     fn serialize(&self) -> Vec<u8> {
-        // TODO implement
-        unimplemented!()
+        let mut v = (self.len() as u64).serialize();
+        v.extend(self.iter().flat_map(|elem| elem.serialize()));
+
+        v
     }
 }
 
