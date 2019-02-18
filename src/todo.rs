@@ -6,4 +6,6 @@ pub struct Todo {
     description: String,
 }
 
-impl Serialize for Todo {}
+impl Serialize for Todo {
+    fn description(iter: &mut Iterator<Item = u8>) -> Todo {}
+}

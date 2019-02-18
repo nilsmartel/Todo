@@ -24,13 +24,20 @@ impl Serialize for u64 {
 }
 
 impl Serialize for String {
-    fn deserialize(iter: &mut Iterator<Item = u8>) -> Option<u64> {
-        if let (Some(size) = u64::deserialize(iter) {
-        
+    fn deserialize(iter: &mut Iterator<Item = u8>) -> Option<String> {
+        if let Some(size) = u64::deserialize(iter) {
+            return match String::from_utf8(iter.take(size as usize).collect::<Vec<u8>>()) {
+                Ok(s) => Some(s),
+                _ => None,
+            };
         }
 
         None
     }
 
-    fn serialze(&self) -> Vec<u8> {}
+    fn serialze(&self) -> Vec<u8> {
+        let mut vec = (self.len() as u64).serialze();
+        vec.append(&mut self.as_bytes().to_vec());
+        vec
+    }
 }
