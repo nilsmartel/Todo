@@ -1,9 +1,9 @@
 use crate::serialize::Serialize;
 use std::io::{Read, Write};
-const PATH: &str = "~/.utils";
+const PATH: &str = "/Users/nilsmartel/.utils";
 
 // TODO return Error instead of unwrapping
-pub fn save<T>(item: T, key: &str)
+pub fn save<T>(item: &T, key: &str)
 where
     T: Serialize,
 {
@@ -12,6 +12,7 @@ where
     }
 
     if !std::path::Path::new(&format!("{}", PATH)).exists() {
+        // Fails here
         std::fs::create_dir(PATH).unwrap();
     }
 
@@ -33,4 +34,10 @@ where
         }
         _ => None,
     }
+}
+
+pub fn clear_data(key: &str) -> std::result::Result<(), std::io::Error> {
+    std::fs::remove_file(key)?;
+
+    Ok(())
 }

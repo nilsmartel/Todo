@@ -2,4 +2,8 @@ mod persistence;
 mod serialize;
 mod todo;
 
-fn main() {}
+fn main() {
+    let todo = persistence::load::<todo::Todo>("testing");
+
+    dbg!(todo);
+}

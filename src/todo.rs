@@ -1,5 +1,6 @@
 use crate::serialize::Serialize;
 
+#[derive(Debug)]
 pub struct Todo {
     list: String,
     done: bool,
