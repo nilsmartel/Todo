@@ -3,7 +3,5 @@ mod serialize;
 mod todo;
 
 fn main() {
-    let todo = persistence::load::<todo::Todo>("testing");
-
-    dbg!(todo);
+    let todos = persistence::load::<Vec<todo::Todo>>("todos").unwrap_or(Vec::new());
 }
