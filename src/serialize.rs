@@ -1,3 +1,48 @@
+#[cfg(test)]
+mod tests {
+    use crate::serialize::Serialize;
+
+    #[test]
+    fn test_string() {
+        let s = String::from("Hello World, my name is Nils Martel😃");
+        let serde = String::deserialize(&mut s.serialize().into_iter()).unwrap();
+
+        assert_eq!(serde, s);
+    }
+
+    #[test]
+    fn test_bool() {
+        let bools = [false, true];
+
+        for b in bools.iter() {
+            let serde = bool::deserialize(&mut b.serialize().into_iter()).unwrap();
+            assert_eq!(serde, *b);
+        }
+    }
+
+    #[test]
+    fn test_u64() {
+        let numbers = [
+            0u64,
+            1,
+            2,
+            10,
+            12,
+            300,
+            42323,
+            43243243,
+            654753478,
+            98795456765,
+            2312464356,
+        ];
+
+        for n in numbers.iter() {
+            let serde: u64 = u64::deserialize(&mut n.serialize().into_iter()).unwrap();
+            assert_eq!(serde, *n);
+        }
+    }
+}
+
 pub trait Serialize {
     fn deserialize(iter: &mut Iterator<Item = u8>) -> Option<Self>
     where
