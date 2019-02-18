@@ -25,6 +25,14 @@ mod tests {
         let numbers = [
             0u64,
             1,
+            1 << 8,
+            1 << 16,
+            1 << 24,
+            1 << 32,
+            1 << 40,
+            1 << 48,
+            1 << 56,
+            !0,
             2,
             10,
             12,
@@ -64,11 +72,11 @@ impl Serialize for bool {
     }
 }
 
-impl Serialize for u64 {
-    fn deserialize(iter: &mut Iterator<Item = u8>) -> Option<u64> {
+impl Serialize for u32 {
+    fn deserialize(iter: &mut Iterator<Item = u8>) -> Option<u32> {
         match (iter.next(), iter.next(), iter.next(), iter.next()) {
             (Some(a), Some(b), Some(c), Some(d)) => {
-                Some((a as u64) << 24 | (b as u64) << 16 | (c as u64) << 8 | d as u64)
+                Some((a as u32) << 24 | (b as u32) << 16 | (c as u32) << 8 | d as u32)
             }
             _ => None,
         }
@@ -78,6 +86,31 @@ impl Serialize for u64 {
         let n = *self;
         let m = |x| (x & 0xFF) as u8;
         vec![m(n >> 24), m(n >> 16), m(n >> 8), m(n)]
+    }
+}
+
+impl Serialize for u64 {
+    fn deserialize(iter: &mut Iterator<Item = u8>) -> Option<u64> {
+        match (u32::deserialize(iter), u32::deserialize(iter)) {
+            (Some(a), Some(b)) => Some((a as u64) << 32 | b as u64),
+            _ => None,
+        }
+    }
+
+    fn serialize(&self) -> Vec<u8> {
+        let n = *self;
+        let m = |x| (x & 0xFF) as u8;
+
+        vec![
+            m(n >> 56),
+            m(n >> 48),
+            m(n >> 40),
+            m(n >> 32),
+            m(n >> 24),
+            m(n >> 16),
+            m(n >> 8),
+            m(n),
+        ]
     }
 }
 
