@@ -59,6 +59,21 @@ pub trait Serialize {
     fn serialize(&self) -> Vec<u8>;
 }
 
+impl<T> Serialize for Vec<T>
+where
+    T: Serialize,
+{
+    fn deserialize(iter: &mut Iterator<Item = u8>) -> Option<Self> {
+        // TODO implement
+        unimplemented!()
+    }
+
+    fn serialize(&self) -> Vec<u8> {
+        // TODO implement
+        unimplemented!()
+    }
+}
+
 impl Serialize for bool {
     fn deserialize(iter: &mut Iterator<Item = u8>) -> Option<bool> {
         match iter.next() {
