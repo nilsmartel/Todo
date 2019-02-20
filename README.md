@@ -16,7 +16,7 @@ _Note: the following is just a showcase of planned usage of `todo`_
             USER INPUT
     >   Description:
             USER INPUT
-``` 
+```
 
 ### To show your TODOs type this
 ```sh
@@ -44,5 +44,13 @@ _Note: the following is just a showcase of planned usage of `todo`_
     # Remove TODOs permanently
     $ todo remove ...<id>
     # Remove all TODOs permanently
-    $ todo remove --all 
+    $ todo remove --all
+```
+
+### Show all available lists
+```sh
+    $ todo list
+    # If you want to see how many TODOs are left to do and how many are done, pass the `ratio` flag
+    $ todo list -r
+    $ todo list --ratio
 ```
