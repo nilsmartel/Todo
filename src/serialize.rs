@@ -130,6 +130,20 @@ impl Serialize for bool {
     }
 }
 
+impl Serialize for u16 {
+    fn deserialize(iter: &mut Iterator<Item = u8>) -> Option<u16> {
+        match (iter.next(), iter.next()) {
+            (Some(a), Some(b)) => Some((a as u16) << 8 | b as u16),
+            _ => None,
+        }
+    }
+
+    fn serialize(&self) -> Vec<u8> {
+        let m = |x| (x & 0xFF) as u8;
+        vec![m(*self >> 8), m(*self)]
+    }
+}
+
 impl Serialize for u32 {
     fn deserialize(iter: &mut Iterator<Item = u8>) -> Option<u32> {
         match (iter.next(), iter.next(), iter.next(), iter.next()) {
