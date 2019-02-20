@@ -1,3 +1,4 @@
+#[macro_use]
 extern crate clap;
 use clap::{App, Arg, SubCommand};
 
@@ -7,8 +8,8 @@ mod todo;
 
 fn main() {
     let app = App::new("Todo")
-        .version("0.1.0 alpha")
-        .author("Nils M.")
+        .version(crate_version!())
+        .author(crate_authors!())
         .about("Manages your list of things to do")
         .subcommand(
             SubCommand::with_name("show")
