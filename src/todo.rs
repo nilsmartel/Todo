@@ -2,21 +2,60 @@ use crate::serialize::Serialize;
 
 #[derive(Debug)]
 pub struct Todo {
-    list: String,
+    list: Alphanumeric,
     done: bool,
     description: String,
+}
+
+#[derive(Debug)]
+pub struct Alphanumeric(String);
+
+impl Alphanumeric {
+    pub fn new() -> Alphanumeric {
+        Alphanumeric(String::new())
+    }
+}
+
+impl From<String> for Alphanumeric {
+    fn from(item: String) -> Alphanumeric {
+        Alphanumeric::from(item.as_str())
+    }
+}
+
+impl From<&str> for Alphanumeric {
+    fn from(item: &str) -> Alphanumeric {
+        Alphanumeric(
+            item.to_lowercase()
+                .chars()
+                .filter(|&c| c >= 'a' && c <= 'z' || c >= '0' && c <= '9')
+                .collect(),
+        )
+    }
+}
+
+impl Serialize for Alphanumeric {
+    fn deserialize(iter: &mut Iterator<Item = u8>) -> Option<Alphanumeric> {
+        match String::deserialize(iter) {
+            Some(s) => Some(Alphanumeric::from(s)),
+            _ => None,
+        }
+    }
+
+    fn serialize(&self) -> Vec<u8> {
+        self.0.serialize()
+    }
 }
 
 impl Todo {
     pub fn new() -> Todo {
         Todo {
-            list: String::new(),
+            list: Alphanumeric::new(),
             done: false,
             description: String::new(),
         }
     }
 
-    pub fn with_list(mut self, list: String) -> Todo {
+    pub fn with_list(mut self, list: Alphanumeric) -> Todo {
         self.list = list;
         self
     }
@@ -34,7 +73,7 @@ impl Todo {
         self.done = done;
     }
 
-    pub fn set_list(&mut self, list: String) {
+    pub fn set_list(&mut self, list: Alphanumeric) {
         self.list = list;
     }
 
@@ -46,7 +85,7 @@ impl Todo {
 impl Serialize for Todo {
     fn deserialize(iter: &mut Iterator<Item = u8>) -> Option<Todo> {
         match (
-            String::deserialize(iter),
+            Alphanumeric::deserialize(iter),
             bool::deserialize(iter),
             String::deserialize(iter),
         ) {
