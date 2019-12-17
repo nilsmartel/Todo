@@ -14,6 +14,7 @@ fn main() {
         .subcommand(
             SubCommand::with_name("show")
                 .about("display your todos")
+                .arg(Arg::with_name("list").help("specify which list you want to display"))
                 .arg(
                     Arg::with_name("all")
                         .short("a")
